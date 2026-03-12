@@ -1,4 +1,5 @@
 import { ModeToggle } from "@/components/mode-toggle"
+import { ThemePaletteSwitcher } from "@/components/theme-palette-switcher"
 import { WeatherSearchShell } from "@/components/weather-search-shell"
 
 export default function Home() {
@@ -14,7 +15,10 @@ export default function Home() {
              Solo escriba el nombre de la ciudad que desea consultar
             </p>
           </div>
-          <ModeToggle />
+          <div className="flex items-center gap-2">
+            <ThemePaletteSwitcher />
+            <ModeToggle />
+          </div>
         </header>
 
         <section className="mx-auto w-full max-w-2xl">
