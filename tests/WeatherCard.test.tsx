@@ -36,6 +36,7 @@ const mockWeatherData: WeatherData = {
 describe("WeatherCard", () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    window.history.replaceState(null, "", "/")
   })
   // Verifica que el componente muestre correctamente la informacion del clima proporcionada
   it("muestra correctamente ciudad, temperatura, humedad y descripcion", () => {
@@ -122,5 +123,32 @@ describe("WeatherCard", () => {
     await user.click(button)
 
     expect(await screen.findByText(/error desconocido/i)).toBeTruthy()
+  })
+
+  it("sincroniza la ciudad buscada en la URL", async () => {
+    const user = userEvent.setup()
+    const fetchWeather: jest.MockedFunction<FetchWeatherFn> = jest.fn()
+    fetchWeather.mockResolvedValueOnce(mockWeatherData)
+
+    render(<WeatherSearchShell fetchWeather={fetchWeather} />)
+
+    const input = screen.getByRole("textbox", { name: /nombre de la ciudad/i })
+    const button = screen.getByRole("button", { name: /buscar/i })
+
+    await user.type(input, "Sonsonate")
+    await user.click(button)
+
+    expect(window.location.search).toBe("?city=Sonsonate")
+  })
+
+  it("carga automaticamente desde la URL cuando existe city", async () => {
+    const fetchWeather: jest.MockedFunction<FetchWeatherFn> = jest.fn()
+    fetchWeather.mockResolvedValueOnce(mockWeatherData)
+    window.history.replaceState(null, "", "/?city=Sonsonate")
+
+    render(<WeatherSearchShell fetchWeather={fetchWeather} />)
+
+    expect(fetchWeather).toHaveBeenCalledWith("Sonsonate")
+    expect(await screen.findByText(/san salvador/i)).toBeTruthy()
   })
 })

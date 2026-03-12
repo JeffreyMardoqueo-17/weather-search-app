@@ -1,36 +1,225 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Weather Search App
 
-## Getting Started
+Esta es mi prueba tecnica Una app web para consultar el clima actual por ciudad usando Next.js, TypeScript y OpenWeather.
 
-First, run the development server:
+## 1. Requisitos
+
+Antes de iniciar, necesitas:
+
+- Node.js 20 o superior
+- npm 10 o superior
+- Una API key valida de OpenWeather
+
+Verifica versiones:
+
+```bash
+node -v
+npm -v
+```
+
+## 2. Instalacion del proyecto
+
+1. Instala dependencias
+
+```bash
+npm install
+```
+
+2. Se debe crear `.env.local` en la raiz del proyecto con estas variables
+
+```env
+NEXT_PUBLIC_OPENWEATHERMAP_API_KEY=aquivalakey
+NEXT_PUBLIC_OPENWEATHER_API_BASE_URL=https://api.openweathermap.org/data/2.5
+NEXT_PUBLIC_OPENWEATHER_ICON_BASE_URL=https://openweathermap.org/img/wn
+```
+
+Notas importantes
+
+- Si falta una variable, la app lanzara un error claro al inicializar la configuracion.
+- Todas las variables son `NEXT_PUBLIC_*` porque se usan desde el cliente.
+
+## 3. Como iniciar en desarrollo
+
+Ejecuta:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+En el navegador:
+
+- http://localhost:3000
+![alt text](image-2.png)
+![alt text](image-3.png)
+## 4. Scripts disponibles
+
+### Desarrollo
+
+```bash
+npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Inicia servidor de desarrollo de Next.js.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build de produccion
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+Genera el build optimizado.
 
-To learn more about Next.js, take a look at the following resources:
+### Ejecutar build en produccion
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Levanta la app usando el build generado.
 
-## Deploy on Vercel
+### Lint
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run lint
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Ejecuta ESLint para validar calidad de codigo.
+
+### Tests
+
+```bash
+npm run test
+```
+
+Ejecuta pruebas con Jest.
+
+### Cobertura
+
+```bash
+npm run test:coverage
+```
+![alt text](image.png)
+
+Genera reporte de cobertura en la carpeta `coverage/`.
+
+## 5. Testing (Jest + Testing Library)
+
+El proyecto usa:
+
+- Jest como test runner
+- React Testing Library para pruebas de componentes
+- user-event para simular interacciones reales
+
+
+Documentacion extendida de testing:
+
+- `docs/testing-react-testing-library.md`
+
+## 6. Tema visual y paletas de color
+
+La app tiene dos capas de tema:
+
+1. Modo de color: `light` / `dark` / `system` (con `next-themes`).
+2. Paleta: `default` (grises), `clynic`, `ocean`, `sunset`.
+
+Comportamiento clave:
+
+- La paleta seleccionada se guarda en `localStorage`.
+- Se aplica en `html` usando `data-palette`.
+- Si la paleta es `default`, se elimina `data-palette` para usar el tema base.
+- El selector evita errores de hidratacion SSR/CSR.
+
+Documentacion extendida de paletas:
+
+- `docs/theming-paletas.md`
+
+## 7. URL dinamica por ciudad (feature de compartido)
+
+La app ahora sincroniza la ciudad consultada en la URL con query param:
+
+- Formato: `/?city=Sonsonate`
+
+Comportamiento:
+
+1. Al buscar una ciudad se actualiza la URL automaticamente con `city`
+2. Si abres o compartes ese link, la app carga la ciudad desde la URL y ejecuta la consulta al iniciar.
+3. El input mantiene el valor de la ciudad cargada para que la experiencia sea consistente.
+
+Ejemplo de uso:
+
+```text
+http://localhost:3000/?city=Sonsonate
+```
+
+Esto mejora UX, soporte y compartido de resultados porque el estado principal de busqueda queda reflejado en la URL.
+
+## 8. Stack tecnico y paquetes usados
+
+### Base del proyecto
+
+- Next.js 16.1.6
+- React 19
+- TypeScript 5
+
+
+### Datos y servicios
+
+- axios
+
+### Calidad y pruebas
+
+- eslint + eslint-config-next
+- jest + jest-environment-jsdom
+- @testing-library/react
+- @testing-library/jest-dom
+- @testing-library/user-event
+
+## 9. Solucion de problemas comunes
+
+### Error por variables de entorno faltantes
+
+Revisa `.env.local` y confirma que estan las 3 variables `NEXT_PUBLIC_OPENWEATHER...`.
+
+### Error de API key invalida
+
+Verifica que tu key de OpenWeather sea correcta y este activa.
+
+### No carga iconos del clima
+
+Confirma que `NEXT_PUBLIC_OPENWEATHER_ICON_BASE_URL` sea:
+
+```text
+https://openweathermap.org/img/wn
+```
+
+### Warning/error de hidratacion
+
+El selector de paletas ya incluye manejo para evitar mismatch SSR/CSR cuando existe un valor guardado en `localStorage`.
+
+## 10. Estado actual
+
+- App funcional para busqueda de clima por ciudad.
+- Sistema de paletas listo para crecer a mas pantallas.
+- Pruebas base implementadas para flujo principal.
+
+## 11. Documentacion adicional (archivos .md)
+
+Para mantener el README limpio, este proyecto separa detalles tecnicos en documentos especificos dentro de `docs/`.
+
+### 11.1 Testing detallado
+
+- Archivo: `docs/testing-react-testing-library.md`
+- Enlace rapido: [docs/testing-react-testing-library.md](docs/testing-react-testing-library.md)
+
+
+### 11.2 Temas y paletas de color
+
+- Archivo: `docs/theming-paletas.md`
+- Enlace rapido: [docs/theming-paletas.md](docs/theming-paletas.md)
+
+### 11.3 Orden recomendado de lectura
+
+Para entnder todo
+
+1. Este README (setup + comandos).
+2. [docs/theming-paletas.md](docs/theming-paletas.md) (sistema visual).
+3. [docs/testing-react-testing-library.md](docs/testing-react-testing-library.md) (calidad y pruebas).
