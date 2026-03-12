@@ -48,7 +48,8 @@ npm run dev
 En el navegador:
 
 - http://localhost:3000
-
+![alt text](image-2.png)
+![alt text](image-3.png)
 ## 4. Scripts disponibles
 
 ### Desarrollo
@@ -96,6 +97,7 @@ Ejecuta pruebas con Jest.
 ```bash
 npm run test:coverage
 ```
+![alt text](image.png)
 
 Genera reporte de cobertura en la carpeta `coverage/`.
 
@@ -130,7 +132,27 @@ Documentacion extendida de paletas:
 
 - `docs/theming-paletas.md`
 
-## 7. Stack tecnico y paquetes usados
+## 7. URL dinamica por ciudad (feature de compartido)
+
+La app ahora sincroniza la ciudad consultada en la URL con query param:
+
+- Formato: `/?city=Sonsonate`
+
+Comportamiento:
+
+1. Al buscar una ciudad se actualiza la URL automaticamente con `city`
+2. Si abres o compartes ese link, la app carga la ciudad desde la URL y ejecuta la consulta al iniciar.
+3. El input mantiene el valor de la ciudad cargada para que la experiencia sea consistente.
+
+Ejemplo de uso:
+
+```text
+http://localhost:3000/?city=Sonsonate
+```
+
+Esto mejora UX, soporte y compartido de resultados porque el estado principal de busqueda queda reflejado en la URL.
+
+## 8. Stack tecnico y paquetes usados
 
 ### Base del proyecto
 
@@ -151,7 +173,7 @@ Documentacion extendida de paletas:
 - @testing-library/jest-dom
 - @testing-library/user-event
 
-## 8. Solucion de problemas comunes
+## 9. Solucion de problemas comunes
 
 ### Error por variables de entorno faltantes
 

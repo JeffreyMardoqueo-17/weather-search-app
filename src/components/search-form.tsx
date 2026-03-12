@@ -1,6 +1,6 @@
 "use client"
 
-import { type FormEvent, useState } from "react"
+import { type FormEvent, useEffect, useState } from "react"
 import { Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -11,13 +11,22 @@ interface SearchFormProps {
   onSearch: (city: string) => void
   ///Bloquea el formulario mientras se está consultando 
   isLoading: boolean
+  initialCity?: string
 }
 
 
 // SearchForm formulario de busqueda de la ciudad
 
-export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
-  const [city, setCity] = useState("")
+export function SearchForm({
+  onSearch,
+  isLoading,
+  initialCity = "",
+}: SearchFormProps) {
+  const [city, setCity] = useState(initialCity)
+
+  useEffect(() => {
+    setCity(initialCity)
+  }, [initialCity])
 
     // Maneja el submit del formulario v
   function handleSubmit(e: FormEvent<HTMLFormElement>) {

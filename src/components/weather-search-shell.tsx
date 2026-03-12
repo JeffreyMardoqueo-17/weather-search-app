@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { CloudSun } from "lucide-react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -24,14 +24,32 @@ export function WeatherSearchShell({
   const [status, setStatus] = useState<Status>("idle")
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [errorMessage, setErrorMessage] = useState("")
+  const [searchCity, setSearchCity] = useState("")
+  const didSyncFromUrl = useRef(false)
 
-  async function handleSearch(city: string) {
+  function syncCityQueryParam(city: string) {
+    if (typeof window === "undefined") return
+
+    const url = new URL(window.location.href)
+    url.searchParams.set("city", city)
+    window.history.replaceState(null, "", `${url.pathname}?${url.searchParams.toString()}`)
+  }
+
+  async function handleSearch(city: string, syncUrl = true) {
+    const trimmedCity = city.trim()
+    if (!trimmedCity) return
+
+    if (syncUrl) {
+      syncCityQueryParam(trimmedCity)
+    }
+
+    setSearchCity(trimmedCity)
     setStatus("loading")
     setErrorMessage("")
     setWeather(null)
 
     try {
-      const data = await fetchWeather(city)
+      const data = await fetchWeather(trimmedCity)
       setWeather(data)
       setStatus("success")
     } catch (error) {
@@ -42,10 +60,27 @@ export function WeatherSearchShell({
     }
   }
 
+  useEffect(() => {
+    if (didSyncFromUrl.current || typeof window === "undefined") return
+
+    didSyncFromUrl.current = true
+    const cityFromQuery = new URLSearchParams(window.location.search).get("city")
+
+    if (cityFromQuery?.trim()) {
+      void handleSearch(cityFromQuery, false)
+    }
+  }, [])
+
   return (
     <div className="space-y-5">
       {/* Formulario de BUSQUEDA */}
-      <SearchForm onSearch={handleSearch} isLoading={status === "loading"} />
+      <SearchForm
+        onSearch={(city) => {
+          void handleSearch(city)
+        }}
+        isLoading={status === "loading"}
+        initialCity={searchCity}
+      />
 
       {/* Estado cargando */}
       {status === "loading" && (
