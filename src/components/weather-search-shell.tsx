@@ -1,4 +1,4 @@
-  "use client"
+"use client"
 
 import { useState } from "react"
 import { CloudSun } from "lucide-react"
@@ -12,9 +12,15 @@ import type { WeatherData } from "@/types/weather"
 // Posibles estados del flujo de búsqueda
 type Status = "idle" | "loading" | "error" | "success"
 
+interface WeatherSearchShellProps {
+  fetchWeather?: (city: string) => Promise<WeatherData>
+}
+
 // WeatherSearchShell orquestador principal
 // Gestiona el estado de la app y coordina SearchForm + WeatherCard
-export function WeatherSearchShell() {
+export function WeatherSearchShell({
+  fetchWeather = getWeatherByCity,
+}: WeatherSearchShellProps) {
   const [status, setStatus] = useState<Status>("idle")
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [errorMessage, setErrorMessage] = useState("")
@@ -25,7 +31,7 @@ export function WeatherSearchShell() {
     setWeather(null)
 
     try {
-      const data = await getWeatherByCity(city)
+      const data = await fetchWeather(city)
       setWeather(data)
       setStatus("success")
     } catch (error) {
