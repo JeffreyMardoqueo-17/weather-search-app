@@ -6,6 +6,11 @@ import { cn } from "@/lib/utils"
 
 import "./globals.css"
 
+const siteName = "Weather Search App"
+const siteTitle = "Aplicación de clima en tiempo real"
+const siteDescription =
+  "Consulta el clima actual de cualquier ciudad del mundo con temperatura, humedad y descripción meteorológica en tiempo real usando Next.js y OpenWeatherMap."
+
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" })
 
 const geistMono = Geist_Mono({
@@ -14,27 +19,60 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  applicationName: siteName,
   title: {
-    default: "Weather Search App",
-    template: "%s | Weather Search App",
+    default: `${siteTitle} | ${siteName}`,
+    template: `%s | ${siteName}`,
   },
-  description:
-    "Aplicacion base para buscar el clima por ciudad con Next.js App Router y Shadcn UI.",
+  description: siteDescription,
   keywords: [
-    "weather",
-    "clima",
+    "aplicacion del clima",
+    "clima actual",
+    "clima por ciudad",
+    "consultar clima",
+    "temperatura actual",
+    "humedad actual",
+    "pronostico del tiempo",
+    "weather app",
+    "current weather",
+    "openweathermap",
     "next.js",
-    "shadcn ui",
     "typescript",
     "tailwind",
+    "shadcn ui",
   ],
+  category: "weather",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
-    title: "Weather Search App",
-    description:
-      "Interfaz inicial para consultas meteorologicas, optimizada para escalar.",
+    title: `${siteTitle} | ${siteName}`,
+    description: siteDescription,
     type: "website",
     locale: "es_ES",
-    siteName: "Weather Search App",
+    siteName,
+    countryName: "Global",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteTitle} | ${siteName}`,
+    description: siteDescription,
   },
 }
 
